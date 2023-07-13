@@ -56,6 +56,8 @@ const MachineTypes = () => {
   });
   const [editMode, setEditMode] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState(null);
+  const [filter, setFilter] = useState("");
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("machineTypes", JSON.stringify(machineTypes));
@@ -117,18 +119,55 @@ const MachineTypes = () => {
     setMachineTypes(updatedMachineTypes);
   };
 
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const toggleDrawer = () => {
+    setDrawerVisible((prevVisible) => !prevVisible);
+  };
+
+  const filteredMachineTypes = machineTypes.filter((type) =>
+    type.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col items-center bg-gray-100 py-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-8">All Machines</h2>
-      {machineTypes.map((type, typeIndex) => (
+      <div className="flex justify-between items-center gap-10 mb-4">
+        <h2 className="text-xl font-semibold">Machine Types</h2>
+        <button
+          onClick={toggleDrawer}
+          className="bg-blue-600 hover:blue-700 px-5 py-3 text text-white font-semibold rounded-xl cursor-pointer shadow-lg focus:outline-none"
+        >
+          Filters
+        </button>
+      </div>
+      {drawerVisible && (
+        <div className="drawer p-4 bg-gray-100">
+          <h3 className="text-lg font-semibold mb-2">Filters</h3>
+          <input
+            type="text"
+            value={filter}
+            onChange={handleFilterChange}
+                      placeholder="Filter by machine type"
+                      className="w-full px-4 py-2 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      )}
+      {filteredMachineTypes.map((type, typeIndex) => (
         <div
           key={type.id}
           className="w-full md:w-2/3 lg:w-1/2 bg-slate-50 rounded-xl shadow-2xl mb-10 p-2 border-2 border-gray-400/50"
         >
           <div className="p-6 mx-auto">
-            <h3 className="text-xl font-semibold mb-4 text-center uppercase">{type.title}</h3>
+            <h3 className="text-xl font-semibold mb-4 text-center uppercase">
+              {type.title}
+            </h3>
             <div>
-              <h4 className="font-medium mb-2 underline underline-offset-2">Shared Attributes</h4>
+              <h4 className="font-medium mb-2 underline underline-offset-2">
+                Shared Attributes
+              </h4>
               <ul className="list-disc pl-6">
                 {type.sharedAttributes.map((attribute, index) => (
                   <li key={index}>{attribute}</li>
@@ -136,7 +175,9 @@ const MachineTypes = () => {
               </ul>
             </div>
             <div className="mt-4">
-              <h4 className="font-medium mb-2 underline underline-offset-2">Specific Attributes</h4>
+              <h4 className="font-medium mb-2 underline underline-offset-2">
+                Specific Attributes
+              </h4>
               <ul className="list-disc pl-6">
                 {type.specificAttributes.map((attribute, index) => (
                   <li key={index}>{attribute}</li>
@@ -144,7 +185,9 @@ const MachineTypes = () => {
               </ul>
             </div>
             <div className="mt-4">
-              <h4 className="font-medium mb-2 underline underline-offset-2">Machines</h4>
+              <h4 className="font-medium mb-2 underline underline-offset-2">
+                Machines
+              </h4>
               <ul className="pl-6 list-decimal">
                 {type.machines.map((machine, machineIndex) => (
                   <li key={machine.id}>
@@ -224,7 +267,9 @@ const MachineTypes = () => {
             )}
           {!editMode && (
             <div className="bg-gray-200 p-6 outline-dashed outline-offset-1 outline-gray-500 rounded-lg">
-              <h4 className="text-lg font-bold mb-4 text-center">Add New Machine</h4>
+              <h4 className="text-lg font-bold mb-4 text-center">
+                Add New Machine
+              </h4>
               <div className="flex items-center mb-4">
                 <span className="font-medium mr-2">Brand:</span>
                 <input
